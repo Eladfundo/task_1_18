@@ -8,7 +8,9 @@ from nnet import model
 
 # TODO: import torch and torchvision libraries
 # We will use torchvision's transforms and datasets
-
+import torch 
+import torchvision
+import torch.nn as nn
 
 # TODO: Defining torchvision transforms for preprocessing
 # TODO: Using torchvision datasets to load MNIST

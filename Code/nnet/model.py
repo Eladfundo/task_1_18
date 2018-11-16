@@ -43,9 +43,9 @@ class FullyConnected:
         w3 = wbg.weight_initialiser(N_h2,N_out)
         self.weights = {'w1': w1, 'w2': w2, 'w3': w3}
 
-        b1 = 
-        b2 = 
-        b3 = 
+        b1 = wbg.bias_initialiser(N_h1)
+        b2 = wbg.bias_initialiser(N_h2)
+        b3 = wbg.bias_initialiser(N_out)
         self.biases = {'b1': b1, 'b2': b2, 'b3': b3}
 
         self.cache = {'z1': z1, 'z2': z2, 'z3': z3}

@@ -1,4 +1,5 @@
 import torch
+print("Import Done")
 
 def weight_initialiser(N_prev_layer,N_current_layer):
         """
@@ -30,5 +31,7 @@ def bias_initialiser(N_current_layer):
         bias: Tensor of filled with 0.
         """
         bias=torch.zeros(N_current_layer,1)
-        
         return bias
+
+
+        

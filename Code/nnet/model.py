@@ -4,6 +4,9 @@
 import math
 import torch
 
+#Importing user defined module that generates weight and biases 
+import weight_bias_generator as wbg
+
 class FullyConnected:
     """Constructs the Neural Network architecture.
 
@@ -34,10 +37,10 @@ class FullyConnected:
         self.N_out = N_out
 
         self.device = torch.device(device)
-
-        w1 = 
-        w2 = 
-        w3 = 
+        #Here w1 represent the weight of the N
+        w1 = wbg.weight_initialiser(N_in,N_h1)
+        w2 = wbg.weight_initialiser(N_h1,N_h2)
+        w3 = wbg.weight_initialiser(N_h2,N_out)
         self.weights = {'w1': w1, 'w2': w2, 'w3': w3}
 
         b1 = 
@@ -217,6 +220,8 @@ class FullyConnected:
         db2 = 
         db3 = 
         return dw1, db1, dw2, db2, dw3, db3
+    
+    
 
 
 if __name__ == "__main__":

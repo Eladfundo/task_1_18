@@ -17,7 +17,10 @@ def delta_sigmoid(z):
     """Calculates derivative of sigmoid function
 
     """
-    grad_sigmoid = 
+    z.requires_grad_(True)
+    sigmoid_z=torch.sigmoid(z)
+    sigmoid_z.backward(z)
+    grad_sigmoid = z.grad
     return grad_sigmoid 
     
 
@@ -34,8 +37,10 @@ def softmax(x):
     return stable_softmax
 
 #moudule Testing
+"""
 a=torch.rand((5, 1),requires_grad=True)
 print(a)
 print(delta_sigmoid(a))
+"""
 if __name__ == "__main__":
     pass

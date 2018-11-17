@@ -3,6 +3,7 @@
 
 import math
 import torch
+import torch.nn as nn
 
 #Importing user defined module that generates weight and biases 
 import weight_bias_generator as wbg
@@ -38,14 +39,14 @@ class FullyConnected:
 
         self.device = torch.device(device)
         #Here w1 represent the weight of the N
-        w1 = wbg.weight_initialiser(N_in,N_h1)
-        w2 = wbg.weight_initialiser(N_h1,N_h2)
-        w3 = wbg.weight_initialiser(N_h2,N_out)
+        w1 = wbg.weight_initialiser(N_in,N_h1,device=device)
+        w2 = wbg.weight_initialiser(N_h1,N_h2,device=device)
+        w3 = wbg.weight_initialiser(N_h2,N_out,device=device)
         self.weights = {'w1': w1, 'w2': w2, 'w3': w3}
 
-        b1 = wbg.bias_initialiser(N_h1)
-        b2 = wbg.bias_initialiser(N_h2)
-        b3 = wbg.bias_initialiser(N_out)
+        b1 = wbg.bias_initialiser(N_h1,device=device)
+        b2 = wbg.bias_initialiser(N_h2,device=device)
+        b3 = wbg.bias_initialiser(N_out,device=device)
         self.biases = {'b1': b1, 'b2': b2, 'b3': b3}
 
         self.cache = {'z1': z1, 'z2': z2, 'z3': z3}

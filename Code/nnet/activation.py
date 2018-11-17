@@ -17,8 +17,9 @@ def delta_sigmoid(z):
     """Calculates derivative of sigmoid function
 
     """
+    grad_sigmoid = 
+    return grad_sigmoid 
     
-    return grad_sigmoid
 
 # Extra TODO: Document with proper docstring
 def softmax(x):

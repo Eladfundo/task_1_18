@@ -14,9 +14,10 @@ def weight_initialiser(N_prev_layer,N_current_layer):
         Returns:
         weight: Tensor of value of weight.
         """
-        weight_val = 1/(N_prev_layer**0.5)
-        weight=torch.empty(N_current_layer,1)
-        weight._fill(weight_val)
+        weight_val = 1.0/(N_prev_layer**0.5)
+        print(weight_val)
+        tensor = torch.ones((N_current_layer,1), dtype=torch.float64)
+        weight=tensor.new_full((N_current_layer, 1), 3.141592)
         return weight
 
 def bias_initialiser(N_current_layer):
@@ -33,5 +34,9 @@ def bias_initialiser(N_current_layer):
         bias=torch.zeros(N_current_layer,1)
         return bias
 
+def tensor_generator():
+        tensor = torch.ones((2,), dtype=torch.float64)
+        a=tensor.new_full((3, 4), 3.141592)
+        return(a)
 
-        
+

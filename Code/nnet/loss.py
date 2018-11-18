@@ -2,13 +2,16 @@
 # NOTE: You can only use Tensor API of PyTorch
 
 import torch
+import torch.nn as nn
+
 
 # Extra TODO: Document with proper docstring
 def cross_entropy_loss(outputs, labels):
     """Calculates cross entropy loss given outputs and actual labels
 
-    """    
-    creloss = 
+    """  
+    loss = nn.CrossEntropyLoss()  
+    creloss = loss(outputs,labels)
     return creloss.item()   # should return float not tensor
 
 # Extra TODO: Document with proper docstring

@@ -1,5 +1,5 @@
 import torch
-print("Import Done")
+
 
 def weight_initialiser(N_prev_layer,N_current_layer,device='cpu'):
         """
@@ -16,8 +16,8 @@ def weight_initialiser(N_prev_layer,N_current_layer,device='cpu'):
         """
         weight_val = 1.0/(N_prev_layer**0.5)
         print(weight_val)
-        tensor = torch.ones((N_current_layer,1), dtype=torch.float64,requires_grad=True)
-        weight=tensor.new_full((N_current_layer, 1), 3.141592)
+        tensor = torch.ones((N_current_layer,N_prev_layer),requires_grad=True)
+        weight=tensor.new_full((N_current_layer, N_prev_layer), weight_val)
         weight=weight.to(device)
         return weight
 

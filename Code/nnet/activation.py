@@ -3,6 +3,7 @@
 
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 
 # Extra TODO: Document with proper docstring
 def sigmoid(z):
@@ -32,15 +33,14 @@ def softmax(x):
 
     """
     z=x-max(x)
-    temp_softmax= nn.Softmax()#Declaring softmax object
-    stable_softmax =temp_softmax(z)
+    stable_softmax = F.softmax(z,dim=0)
     return stable_softmax
 
 #moudule Testing
 """
-a=torch.rand((5, 1),requires_grad=True)
+a=torch.rand((10, 1),requires_grad=True)
 print(a)
-print(delta_sigmoid(a))
+print(softmax(a))
 """
 if __name__ == "__main__":
     pass

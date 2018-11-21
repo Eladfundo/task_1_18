@@ -5,6 +5,9 @@ import math
 import torch
 import torch.nn as nn
 
+#Other modules
+import loss 
+
 #Importing user defined module that generates weight and biases 
 import weight_bias_generator as wbg
 
@@ -68,8 +71,9 @@ class FullyConnected:
             accuracy (float): ratio of correctly classified to total samples
             outputs (torch.tensor): predictions from neural network. Size (batch_size, N_out)
         """
-        outputs = # forward pass
-        creloss = # calculate loss
+        outputs =self.forward(inputs) # forward pass
+        creloss = loss.cross_entropy_loss(outputs,labels)# calculate loss
+        
         accuracy = # calculate accuracy
         
         if debug:
@@ -92,7 +96,7 @@ class FullyConnected:
             score (torch.tensor): max score for each class. Size (batch_size)
             idx (torch.tensor): index of most activating neuron. Size (batch_size)  
         """
-        outputs = # forward pass
+        outputs = forward(inputs)# forward pass
         score, idx = # find max score and its index
         return score, idx
 
@@ -111,8 +115,8 @@ class FullyConnected:
             accuracy (float): ratio of correctly to uncorrectly classified samples
             outputs (torch.tensor): predictions from neural network. Size (batch_size, N_out)
         """
-        outputs = # forward pass
-        creloss = # calculate loss
+        outputs =self.forward(inputs) # forward pass
+        creloss = loss.cross_entropy_loss(outputs,labels)# calculate loss
         accuracy = # calculate accuracy
 
         if debug:
@@ -147,12 +151,13 @@ class FullyConnected:
         Returns:
             outputs (torch.tensor): predictions from neural network. Size (batch_size, N_out)
         """
-        self.cache['z1'] = 
-        a1 = 
-        self.cache['z2'] = 
-        a2 = 
-        self.cache['z3'] = 
-        outputs = 
+        
+        self.cache['z1'] = self.weighted_sum(inputs,self.weights['w1'],self.biases['b1'])
+        a1 = activation.sigmoid(self.cache['z1'])
+        self.cache['z2'] = self.weighted_sum(a1,self.weights['w2'],self.biases['b2'])
+        a2 = activation.sigmoid(cache['z2'])
+        self.cache['z3'] = self.weighted_sum(a2,self.weights['w3'],self.biases['b3'])
+        outputs = activation.softmax(cache['z3'])
         return outputs
 
     def weighted_sum(self, X, w, b):
@@ -166,7 +171,8 @@ class FullyConnected:
         Returns:
             result (torch.tensor): w*X + b of Size (K, J)
         """
-        result = 
+        mul=torch.mm(w,X)#porduct component
+        result=b.add(mul)
         return result
 
     def backward(self, inputs, labels, outputs):

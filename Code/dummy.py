@@ -178,5 +178,12 @@ for i in range(EPOCHS):
         break     
 """
 
-
-            
+for i in range(EPOCHS):
+    for batch_idx,(inputs,label) in enumerate(train_data_loader): 
+        print("Inputs shape",inputs.size())
+        for inputs_data_tensor in inputs:
+            print("inputs_data_tensor",inputs_data_tensor.size())
+            input_matrix_tensor=torch.reshape(inputs_data_tensor,(1,784))
+            print("Input matrix to foward size",input_matrix_tensor.size())
+        break
+    break

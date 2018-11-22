@@ -74,14 +74,14 @@ class FullyConnected:
         outputs =self.forward(inputs) # forward pass
         creloss = loss.cross_entropy_loss(outputs,labels)# calculate loss
         
-        accuracy = # calculate accuracy
+        accuracy ="Accuracy not working" # calculate accuracy
         
         if debug:
             print('loss: ', creloss)
             print('accuracy: ', accuracy)
-        
-        dw1, db1, dw2, db2, dw3, db3 = 
-        self.weights, self.biases = 
+        #"train dwn ,dbn"
+        dw1, db1, dw2, db2, dw3, db3 = "train dwn ,dbn","train dwn ,dbn","train dwn ,dbn","train dwn ,dbn","train dwn ,dbn","train dwn ,dbn"
+        self.weights, self.biases = {'w1': "train_err", 'w2': "train_err", 'w3': "train_err"},{'b1':"train_err", 'b2':"train_err", 'b3': "train_err"}
         return creloss, accuracy, outputs
 
     def predict(self, inputs):
@@ -97,7 +97,7 @@ class FullyConnected:
             idx (torch.tensor): index of most activating neuron. Size (batch_size)  
         """
         outputs = forward(inputs)# forward pass
-        score, idx = # find max score and its index
+        score, idx ="score not calculated","Index not calc" # find max score and its index
         return score, idx
 
     def eval(self, inputs, labels, debug=False):
@@ -117,7 +117,7 @@ class FullyConnected:
         """
         outputs =self.forward(inputs) # forward pass
         creloss = loss.cross_entropy_loss(outputs,labels)# calculate loss
-        accuracy = # calculate accuracy
+        accuracy = "Accuracy not working"# calculate accuracy
 
         if debug:
             print('loss: ', creloss)
@@ -137,7 +137,7 @@ class FullyConnected:
         Returns:
             accuracy (float): accuracy score 
         """
-        accuracy = 
+        accuracy = "Accuracy not working"
         return accuracy
 
     def forward(self, inputs):
@@ -151,13 +151,15 @@ class FullyConnected:
         Returns:
             outputs (torch.tensor): predictions from neural network. Size (batch_size, N_out)
         """
+
+        for input_tensor in inputs:
         
-        self.cache['z1'] = self.weighted_sum(inputs,self.weights['w1'],self.biases['b1'])
-        a1 = activation.sigmoid(self.cache['z1'])
-        self.cache['z2'] = self.weighted_sum(a1,self.weights['w2'],self.biases['b2'])
-        a2 = activation.sigmoid(cache['z2'])
-        self.cache['z3'] = self.weighted_sum(a2,self.weights['w3'],self.biases['b3'])
-        outputs = activation.softmax(cache['z3'])
+            self.cache['z1'] = self.weighted_sum(inputs,self.weights['w1'],self.biases['b1'])
+            a1 = activation.sigmoid(self.cache['z1'])
+            self.cache['z2'] = self.weighted_sum(a1,self.weights['w2'],self.biases['b2'])
+            a2 = activation.sigmoid(cache['z2'])
+            self.cache['z3'] = self.weighted_sum(a2,self.weights['w3'],self.biases['b3'])
+            outputs = activation.softmax(cache['z3'])
         return outputs
 
     def weighted_sum(self, X, w, b):
@@ -194,10 +196,10 @@ class FullyConnected:
             db3 (torch.tensor): Gradient of loss w.r.t. b3. Size like b3
         """
         # Calculating derivative of loss w.r.t weighted sum
-        dout = 
-        d2 = 
-        d1 = 
-        dw1, db1, dw2, db2, dw3, db3 = # calculate all gradients
+        dout = "dout not coded"
+        d2 = "d2 not coded"
+        d1 = "d1 not coded"
+        dw1, db1, dw2, db2, dw3, db3 = "notdw1","notdb1","notdw2","notdb2","notdw3","notdb3"# calculate all gradients
         return dw1, db1, dw2, db2, dw3, db3
 
     def calculate_grad(self, inputs, d1, d2, dout):
@@ -219,13 +221,14 @@ class FullyConnected:
             dw3 (torch.tensor): Gradient of loss w.r.t. w3. Size like w3
             db3 (torch.tensor): Gradient of loss w.r.t. b3. Size like b3
         """
-        dw3 = 
-        dw2 = 
-        dw1 = 
+        #"notdw1","notdb1","notdw2","notdb2","notdw3","notdb3"
+        dw3 = "notdw3"
+        dw2 = "notdw2"
+        dw1 = "notdw1"
 
-        db1 = 
-        db2 = 
-        db3 = 
+        db1 = "notdb1"
+        db2 = "notdb2"
+        db3 = "notdb3"
         return dw1, db1, dw2, db2, dw3, db3
     
     

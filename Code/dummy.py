@@ -16,7 +16,7 @@ from torchvision.datasets import MNIST
 
 #nnet packages to be used
 #from nnet import weight_bias_generator as wbg
-#from nnet import model
+from nnet import model
 
 #The Transformation parameter to tensor
 transforms=transforms.Compose([transforms.ToTensor(),])# ToTensor does min-max normalization. 
@@ -71,9 +71,9 @@ def image_printer_elemental(img_tensor,label_tensor):
 #Getting the shape of test_data_loader
 #image_printer(test_data_loader,1)
 #print("Image fuction working")
-
+"""
 def weight_initialiser(N_prev_layer,N_current_layer,device='cpu'):
-        """
+
         Initializes the weight in the constructor class as a tensor.
         The value of the weight will be  w=1/sqr_root(N_prev_layer)
         Where U(a,b)=
@@ -84,7 +84,7 @@ def weight_initialiser(N_prev_layer,N_current_layer,device='cpu'):
 
         Returns:
         weight: Tensor of value of weight.
-        """
+        
         weight_val = 1.0/(N_prev_layer**0.5)
         print(weight_val)
         tensor = torch.ones((N_current_layer,N_prev_layer),requires_grad=True)
@@ -95,7 +95,7 @@ def weight_initialiser(N_prev_layer,N_current_layer,device='cpu'):
 #define of bias generator
 
 def bias_initialiser(N_current_layer,device='cpu'):
-        """
+        
         Initializes the bias as a tensor.
         The value of the bias will be  b=0
         
@@ -104,10 +104,11 @@ def bias_initialiser(N_current_layer,device='cpu'):
 
         Returns:
         bias: Tensor of filled with 0.
-        """
+        
         bias=torch.zeros((N_current_layer,1),requires_grad=True)
         bias=bias.to(device)
         return bias
+"""
 
 def forward(inputs):
     """Forward pass of neural network
@@ -158,6 +159,8 @@ for i in train_data_loader:
     count=count+1
 
 """
+
+"""
 #weight and bias variables
 w1=weight_initialiser(784,256)
 w2=weight_initialiser(256,256)
@@ -166,7 +169,9 @@ w3=weight_initialiser(256,10)
 b1=bias_initialiser(256)
 b2=bias_initialiser(256)
 b3=bias_initialiser(10)
+"""
 
+net=model.FullyConnected(28*28,256,256,10)
 
 
 EPOCHS=1
@@ -181,9 +186,18 @@ for i in range(EPOCHS):
 for i in range(EPOCHS):
     for batch_idx,(inputs,label) in enumerate(train_data_loader): 
         print("Inputs shape",inputs.size())
+        inputs_size_arr=list(inputs.size())
+        batch_size=inputs_size_arr[0]
+        print("Batch size",batch_size)
+        op=net.forward(inputs)
+        print(op)
+        break
+        """
         for inputs_data_tensor in inputs:
             print("inputs_data_tensor",inputs_data_tensor.size())
             input_matrix_tensor=torch.reshape(inputs_data_tensor,(1,784))
             print("Input matrix to foward size",input_matrix_tensor.size())
         break
+        """
     break
+

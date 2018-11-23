@@ -41,6 +41,7 @@ test_data_loader = dataloader.DataLoader(test,batch_size=4,shuffle=True)
 
 # NOTE: Don't change these settings
 device = "cuda:0" if torch.cuda.is_available() else "cpu"
+device="cpu"
 
 # NOTE: Don't change these settings
 # Layer size
@@ -66,6 +67,12 @@ N_epoch = 5 # Or keep it as is
 ## at the end of each training epoch
 ## >>> net.eval(...)
 
+for epoch_index in range(N_epoch):
+    for batch_idx,(inputs,label) in enumerate(train_data_loader): 
+        
+        print("Got the input and label")    
+        break#Remove ths code
+    break#Remove ths code
 # TODO: End of Training
 # make predictions on randomly selected test examples
 # >>> net.predict(...)

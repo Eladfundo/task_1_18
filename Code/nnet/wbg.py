@@ -38,3 +38,12 @@ def bias_initialiser(N_current_layer,device='cpu'):
 
 
 
+def batch_size_calc(inputs):
+        """
+        parm:Takes in the input tensor 
+
+        returns:batch size(Integer)
+        """
+        inputs_size_arr=list(inputs.size())
+        batch_size=inputs_size_arr[0]
+        return batch_size

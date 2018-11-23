@@ -6,10 +6,8 @@ import torch
 import torch.nn as nn
 
 #Other modules
-import loss 
 
-#Importing user defined module that generates weight and biases 
-import weight_bias_generator as wbg
+
 
 class FullyConnected:
     """Constructs the Neural Network architecture.
@@ -52,7 +50,7 @@ class FullyConnected:
         b3 = wbg.bias_initialiser(N_out,device=device)
         self.biases = {'b1': b1, 'b2': b2, 'b3': b3}
 
-        self.cache = {'z1': z1, 'z2': z2, 'z3': z3}
+        self.cache = {'z1': "Not_def", 'z2': "Not_def" ,'z3': "Not_def"}
 
     # TODO: Change datatypes to proper PyTorch datatypes
     def train(self, inputs, labels, lr=0.001, debug=False):
@@ -96,7 +94,7 @@ class FullyConnected:
             score (torch.tensor): max score for each class. Size (batch_size)
             idx (torch.tensor): index of most activating neuron. Size (batch_size)  
         """
-        outputs = forward(inputs)# forward pass
+        outputs = self.forward(inputs)# forward pass
         score, idx ="score not calculated","Index not calc" # find max score and its index
         return score, idx
 
@@ -151,15 +149,25 @@ class FullyConnected:
         Returns:
             outputs (torch.tensor): predictions from neural network. Size (batch_size, N_out)
         """
-
+        batch_size=wbg.batch_size_calc(inputs)
+        outputs=torch.Tensor(self.N_out,1)
+        print("Empty outputs size",outputs.size())
+        count=1
         for input_tensor in inputs:
-        
-            self.cache['z1'] = self.weighted_sum(inputs,self.weights['w1'],self.biases['b1'])
+            input_matrix_tensor=torch.reshape(input_tensor,(784,1))
+            self.cache['z1'] = self.weighted_sum(input_matrix_tensor,self.weights['w1'],self.biases['b1'])
             a1 = activation.sigmoid(self.cache['z1'])
             self.cache['z2'] = self.weighted_sum(a1,self.weights['w2'],self.biases['b2'])
-            a2 = activation.sigmoid(cache['z2'])
+            a2 = activation.sigmoid(self.cache['z2'])
             self.cache['z3'] = self.weighted_sum(a2,self.weights['w3'],self.biases['b3'])
-            outputs = activation.softmax(cache['z3'])
+            outputs_element = activation.softmax(self.cache['z3'])
+            if count ==1:
+                outputs=outputs_element
+            else:
+                outputs=torch.cat((outputs,outputs_element),1)
+            count=count+1
+        outputs=torch.reshape(outputs,(batch_size,self.N_out))
+        print("Foward pass output size",outputs.size())
         return outputs
 
     def weighted_sum(self, X, w, b):
@@ -235,7 +243,7 @@ class FullyConnected:
 
 
 if __name__ == "__main__":
-    import activation, loss, optimizer
+    import activation, loss, optimizer,wbg
 else:
-    from nnet import activation, loss, optimizer
+    from nnet import activation, loss, optimizer,wbg
 

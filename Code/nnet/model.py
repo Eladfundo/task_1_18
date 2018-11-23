@@ -5,8 +5,9 @@ import math
 import torch
 import torch.nn as nn
 
-#Importing user defined module that generates weight and biases 
-import weight_bias_generator as wbg
+#Other modules
+
+
 
 class FullyConnected:
     """Constructs the Neural Network architecture.
@@ -49,7 +50,7 @@ class FullyConnected:
         b3 = wbg.bias_initialiser(N_out,device=device)
         self.biases = {'b1': b1, 'b2': b2, 'b3': b3}
 
-        self.cache = {'z1': z1, 'z2': z2, 'z3': z3}
+        self.cache = {'z1': "Not_def", 'z2': "Not_def" ,'z3': "Not_def"}
 
     # TODO: Change datatypes to proper PyTorch datatypes
     def train(self, inputs, labels, lr=0.001, debug=False):
@@ -68,16 +69,17 @@ class FullyConnected:
             accuracy (float): ratio of correctly classified to total samples
             outputs (torch.tensor): predictions from neural network. Size (batch_size, N_out)
         """
-        outputs = # forward pass
-        creloss = # calculate loss
-        accuracy = # calculate accuracy
+        outputs =self.forward(inputs) # forward pass
+        creloss = loss.cross_entropy_loss(outputs,labels)# calculate loss
+        
+        accuracy =self.accuracy(outputs,labels) # calculate accuracy
         
         if debug:
             print('loss: ', creloss)
             print('accuracy: ', accuracy)
-        
-        dw1, db1, dw2, db2, dw3, db3 = 
-        self.weights, self.biases = 
+        #"train dwn ,dbn"
+        dw1, db1, dw2, db2, dw3, db3 = "train dwn ,dbn","train dwn ,dbn","train dwn ,dbn","train dwn ,dbn","train dwn ,dbn","train dwn ,dbn"
+        self.weights, self.biases = {'w1': "train_err", 'w2': "train_err", 'w3': "train_err"},{'b1':"train_err", 'b2':"train_err", 'b3': "train_err"}
         return creloss, accuracy, outputs
 
     def predict(self, inputs):
@@ -92,8 +94,8 @@ class FullyConnected:
             score (torch.tensor): max score for each class. Size (batch_size)
             idx (torch.tensor): index of most activating neuron. Size (batch_size)  
         """
-        outputs = # forward pass
-        score, idx = # find max score and its index
+        outputs = self.forward(inputs)# forward pass
+        score, idx =torch.max(outputs,1) # find max score and its index
         return score, idx
 
     def eval(self, inputs, labels, debug=False):
@@ -111,9 +113,9 @@ class FullyConnected:
             accuracy (float): ratio of correctly to uncorrectly classified samples
             outputs (torch.tensor): predictions from neural network. Size (batch_size, N_out)
         """
-        outputs = # forward pass
-        creloss = # calculate loss
-        accuracy = # calculate accuracy
+        outputs =self.forward(inputs) # forward pass
+        creloss = loss.cross_entropy_loss(outputs,labels)# calculate loss
+        accuracy = self.accuracy(inputs,labels)# calculate accuracy
 
         if debug:
             print('loss: ', creloss)
@@ -133,7 +135,20 @@ class FullyConnected:
         Returns:
             accuracy (float): accuracy score 
         """
-        accuracy = 
+        batch_size=wbg.batch_size_calc(outputs)
+        correct_score=0
+        score, idx =torch.max(outputs,1)
+        equality_tensor=torch.eq(idx,labels)
+        non_zero_tensor=torch.nonzero(equality_tensor)
+        print(idx,labels)
+        #Eprint(equality_tensor)
+        print("Non-zero",non_zero_tensor)
+        try:
+            eqt=len(list(non_zero_tensor))
+            #eqt=torch.max(non_zero_tensor).item()
+        except RuntimeError:
+            return 0
+        accuracy =eqt /batch_size
         return accuracy
 
     def forward(self, inputs):
@@ -147,12 +162,25 @@ class FullyConnected:
         Returns:
             outputs (torch.tensor): predictions from neural network. Size (batch_size, N_out)
         """
-        self.cache['z1'] = 
-        a1 = 
-        self.cache['z2'] = 
-        a2 = 
-        self.cache['z3'] = 
-        outputs = 
+        batch_size=wbg.batch_size_calc(inputs)
+        outputs=torch.Tensor(self.N_out,1)
+        #print("Empty outputs size",outputs.size())
+        count=1
+        for input_tensor in inputs:
+            input_matrix_tensor=torch.reshape(input_tensor,(784,1))
+            self.cache['z1'] = self.weighted_sum(input_matrix_tensor,self.weights['w1'],self.biases['b1'])
+            a1 = activation.sigmoid(self.cache['z1'])
+            self.cache['z2'] = self.weighted_sum(a1,self.weights['w2'],self.biases['b2'])
+            a2 = activation.sigmoid(self.cache['z2'])
+            self.cache['z3'] = self.weighted_sum(a2,self.weights['w3'],self.biases['b3'])
+            outputs_element = activation.softmax(self.cache['z3'])
+            if count ==1:
+                outputs=outputs_element
+            else:
+                outputs=torch.cat((outputs,outputs_element),1)
+            count=count+1
+        outputs=torch.reshape(outputs,(batch_size,self.N_out))
+        #print("Foward pass output size",outputs.size())
         return outputs
 
     def weighted_sum(self, X, w, b):
@@ -166,7 +194,8 @@ class FullyConnected:
         Returns:
             result (torch.tensor): w*X + b of Size (K, J)
         """
-        result = 
+        mul=torch.mm(w,X)#porduct component
+        result=b.add(mul)
         return result
 
     def backward(self, inputs, labels, outputs):
@@ -188,10 +217,10 @@ class FullyConnected:
             db3 (torch.tensor): Gradient of loss w.r.t. b3. Size like b3
         """
         # Calculating derivative of loss w.r.t weighted sum
-        dout = 
-        d2 = 
-        d1 = 
-        dw1, db1, dw2, db2, dw3, db3 = # calculate all gradients
+        dout = "dout not coded"
+        d2 = "d2 not coded"
+        d1 = "d1 not coded"
+        dw1, db1, dw2, db2, dw3, db3 = "notdw1","notdb1","notdw2","notdb2","notdw3","notdb3"# calculate all gradients
         return dw1, db1, dw2, db2, dw3, db3
 
     def calculate_grad(self, inputs, d1, d2, dout):
@@ -213,20 +242,27 @@ class FullyConnected:
             dw3 (torch.tensor): Gradient of loss w.r.t. w3. Size like w3
             db3 (torch.tensor): Gradient of loss w.r.t. b3. Size like b3
         """
-        dw3 = 
-        dw2 = 
-        dw1 = 
+        #"notdw1","notdb1","notdw2","notdb2","notdw3","notdb3"
+        dw3 = "notdw3"
+        dw2 = "notdw2"
+        dw1 = "notdw1"
 
-        db1 = 
-        db2 = 
-        db3 = 
+        db1 = "notdb1"
+        db2 = "notdb2"
+        db3 = "notdb3"
         return dw1, db1, dw2, db2, dw3, db3
     
     
+    
+    #Delete this later
+    def crel(self,outputs,labels):
+            return loss.cross_entropy_loss(outputs,labels)
+    
+
 
 
 if __name__ == "__main__":
-    import activation, loss, optimizer
+    import activation, loss, optimizer,wbg
 else:
-    from nnet import activation, loss, optimizer
+    from nnet import activation, loss, optimizer,wbg
 

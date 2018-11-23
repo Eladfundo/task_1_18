@@ -72,7 +72,7 @@ class FullyConnected:
         outputs =self.forward(inputs) # forward pass
         creloss = loss.cross_entropy_loss(outputs,labels)# calculate loss
         
-        accuracy ="Accuracy not working" # calculate accuracy
+        accuracy =self.accuracy(outputs,labels) # calculate accuracy
         
         if debug:
             print('loss: ', creloss)
@@ -95,7 +95,7 @@ class FullyConnected:
             idx (torch.tensor): index of most activating neuron. Size (batch_size)  
         """
         outputs = self.forward(inputs)# forward pass
-        score, idx ="score not calculated","Index not calc" # find max score and its index
+        score, idx =torch.max(outputs,1) # find max score and its index
         return score, idx
 
     def eval(self, inputs, labels, debug=False):
@@ -115,7 +115,7 @@ class FullyConnected:
         """
         outputs =self.forward(inputs) # forward pass
         creloss = loss.cross_entropy_loss(outputs,labels)# calculate loss
-        accuracy = "Accuracy not working"# calculate accuracy
+        accuracy = self.accuracy(inputs,labels)# calculate accuracy
 
         if debug:
             print('loss: ', creloss)
@@ -135,7 +135,20 @@ class FullyConnected:
         Returns:
             accuracy (float): accuracy score 
         """
-        accuracy = "Accuracy not working"
+        batch_size=wbg.batch_size_calc(outputs)
+        correct_score=0
+        score, idx =torch.max(outputs,1)
+        equality_tensor=torch.eq(idx,labels)
+        non_zero_tensor=torch.nonzero(equality_tensor)
+        print(idx,labels)
+        #Eprint(equality_tensor)
+        print("Non-zero",non_zero_tensor)
+        try:
+            eqt=len(list(non_zero_tensor))
+            #eqt=torch.max(non_zero_tensor).item()
+        except RuntimeError:
+            return 0
+        accuracy =eqt /batch_size
         return accuracy
 
     def forward(self, inputs):
@@ -151,7 +164,7 @@ class FullyConnected:
         """
         batch_size=wbg.batch_size_calc(inputs)
         outputs=torch.Tensor(self.N_out,1)
-        print("Empty outputs size",outputs.size())
+        #print("Empty outputs size",outputs.size())
         count=1
         for input_tensor in inputs:
             input_matrix_tensor=torch.reshape(input_tensor,(784,1))
@@ -167,7 +180,7 @@ class FullyConnected:
                 outputs=torch.cat((outputs,outputs_element),1)
             count=count+1
         outputs=torch.reshape(outputs,(batch_size,self.N_out))
-        print("Foward pass output size",outputs.size())
+        #print("Foward pass output size",outputs.size())
         return outputs
 
     def weighted_sum(self, X, w, b):
@@ -240,6 +253,12 @@ class FullyConnected:
         return dw1, db1, dw2, db2, dw3, db3
     
     
+    
+    #Delete this later
+    def crel(self,outputs,labels):
+            return loss.cross_entropy_loss(outputs,labels)
+    
+
 
 
 if __name__ == "__main__":

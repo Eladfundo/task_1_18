@@ -123,7 +123,10 @@ for i in range(EPOCHS):
         #print("Predict Output")
         #print(net.predict(inputs))
         #print(op)
-        print("Accuracy",net.accuracy(op,label))
+        #print("Accuracy",net.accuracy(op,label))
+
+        #print("delta_cre_softmax",net.crel(op,label))
+        break
         
         """
         for inputs_data_tensor in inputs:

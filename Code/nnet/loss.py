@@ -31,7 +31,7 @@ def delta_cross_entropy_softmax(outputs, labels):
     inputs_size_arr=list(outputs.size())
     batch_size=inputs_size_arr[0]
     m=batch_size
-    grad=F.softmax(outputs)
+    grad=F.softmax(outputs,dim=0)
     grad[range(m),labels]-=1
     avg_grads=grad/m
     return avg_grads
@@ -47,7 +47,7 @@ def delta_sigmoid(z):
 if __name__ == "__main__":
     pass
 #local Testing BLock
-
+"""
 output = torch.randn(4, 10).float()
 print("o/p=",output)
 target = torch.Tensor([5, 4, 7, 5])
@@ -55,3 +55,4 @@ print("target=",target.size())
 #print(delta_cross_entropy_softmax(output,target))
 print(delta_cross_entropy_softmax(output,target).size())
 #print(delta_sigmoid(output).size())
+"""

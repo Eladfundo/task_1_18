@@ -69,10 +69,8 @@ N_epoch = 5 # Or keep it as is
 
 for epoch_index in range(N_epoch):
     for batch_idx,(inputs,label) in enumerate(train_data_loader): 
+        net.train()
         
-        print("Got the input and label")    
-        break#Remove ths code
-    break#Remove ths code
 # TODO: End of Training
 # make predictions on randomly selected test examples
 # >>> net.predict(...)

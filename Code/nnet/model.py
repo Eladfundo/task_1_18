@@ -168,19 +168,19 @@ class FullyConnected:
         count=1
 
         for input_tensor in inputs:
-            print("input layer")
+            #print("input layer")
             input_matrix_tensor=torch.reshape(input_tensor,(784,1))
-            print("hl1")
+            #print("hl1")
             z1 = self.weighted_sum(input_matrix_tensor,self.weights['w1'],self.biases['b1'])
             a1 = activation.sigmoid(z1)
-            print("hl2")
+           # print("hl2")
             z2= self.weighted_sum(a1,self.weights['w2'],self.biases['b2'])
             a2 = activation.sigmoid(z2)
-            print("output_layer")
+            #print("output_layer")
             z3 = self.weighted_sum(a2,self.weights['w3'],self.biases['b3'])
             outputs_element = activation.softmax(z3)
             if count ==1:
-                print("1st pass in batch")
+                #print("1st pass in batch")
                 outputs=outputs_element
                 z1_torch=z1
                 z2_torch=z2
@@ -210,10 +210,10 @@ class FullyConnected:
             result (torch.tensor): w*X + b of Size (K, J)
         """
         mul=torch.mm(w,X)#porduct component
-        print("b size",b.size())
-        print("X size",X.size())
-        print("W size",w.size())
-        print("mul size",mul.size())
+        #print("b size",b.size())
+        #print("X size",X.size())
+        #print("W size",w.size())
+        #print("mul size",mul.size())
         result=b+mul    
         return result
 
@@ -239,9 +239,9 @@ class FullyConnected:
         dout = loss.delta_cross_entropy_softmax(outputs,labels)#Size(batch_size,dim of N_out)
         d2 = torch.mm(dout,self.weights['w3'])*loss.delta_sigmoid(self.cache['z2']) #d2 (torch.tensor): error at hidden layer 2. Size like a2 (or z2)
         d1 = torch.mm(d2,self.weights['w2'])*loss.delta_sigmoid(self.cache['z1'])
-        print("dout",dout.size())
-        print("d2",d2.size())
-        print("d1",d1.size())
+        #print("dout",dout.size())
+        #print("d2",d2.size())
+        #print("d1",d1.size())
         dw1, db1, dw2, db2, dw3, db3 = self.calculate_grad(inputs, d1, d2, dout)# calculate all gradients
         return dw1, db1, dw2, db2, dw3, db3
 
@@ -281,12 +281,12 @@ class FullyConnected:
         db2=torch.reshape(db2t,(256,1))
         db3=torch.reshape(db3t,(10,1))
 
-        print("dw1",dw1.size())
-        print("dw2",dw2.size())
-        print("dw3",dw3.size())
-        print("db1",db1.size())
-        print("db2",db2.size())
-        print("db3",db3.size())
+        #print("dw1",dw1.size())
+        #print("dw2",dw2.size())
+        #print("dw3",dw3.size())
+        #print("db1",db1.size())
+        #print("db2",db2.size())
+        #print("db3",db3.size())
         return dw1, db1, dw2, db2, dw3, db3
     #Delete this later
     def crel(self,outputs,labels):

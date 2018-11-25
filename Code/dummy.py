@@ -159,3 +159,4 @@ for i in range(EPOCHS):
 
 plt.plot(cre_loss_arr)
 plt.plot(acc_arr)
+plt.show()

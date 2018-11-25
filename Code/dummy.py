@@ -17,6 +17,7 @@ from torchvision.datasets import MNIST
 #nnet packages to be used
 #from nnet import weight_bias_generator as wbg
 from nnet import model
+import matplotlib.pyplot as plt
 
 #The Transformation parameter to tensor
 transforms=transforms.Compose([transforms.ToTensor(),])# ToTensor does min-max normalization. 
@@ -112,7 +113,8 @@ for i in range(EPOCHS):
             image_printer_elemental(img_tensor,label_tensor)
         break     
 """
-
+#small tester block
+"""
 for i in range(EPOCHS):
     for batch_idx,(inputs,label) in enumerate(train_data_loader): 
         #print("Inputs shape",inputs.size())
@@ -123,14 +125,37 @@ for i in range(EPOCHS):
         #print("Predict Output")
         #print(net.predict(inputs))
         #print(op)
-        print("Accuracy",net.accuracy(op,label))
-        
-        """
+        #print("Accuracy",net.accuracy(op,label))
+    
+        print("delta_cre_softmax",net.crel(op,label))
+        dw1, db1, dw2, db2, dw3, db3=net.backward(inputs,label,op)
+        print("dw1",dw1.size())
+        print("dw2",dw2.size())
+        print("dw3",dw3.size())
+        print("db1",db1.size())
+        print("db2",db2.size())
+        print("db3",db3.size())
+        #print("dw1",dw1.size())
+      
         for inputs_data_tensor in inputs:
             print("inputs_data_tensor",inputs_data_tensor.size())
             input_matrix_tensor=torch.reshape(inputs_data_tensor,(1,784))
             print("Input matrix to foward size",input_matrix_tensor.size())
         break
-        """
+       
     break
+"""
 
+cre_loss_arr=[]
+acc_arr=[]
+
+#Training block
+for i in range(EPOCHS):
+    for batch_idx,(inputs,labels) in enumerate(train_data_loader): 
+        creloss, accuracy, outputs=net.train(inputs,labels)
+        cre_loss_arr.append(creloss)
+        acc_arr.append(accuracy)
+
+
+plt.plot(cre_loss_arr)
+plt.plot(acc_arr)

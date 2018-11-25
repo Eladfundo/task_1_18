@@ -78,8 +78,9 @@ class FullyConnected:
             print('loss: ', creloss)
             print('accuracy: ', accuracy)
         #"train dwn ,dbn"
-        dw1, db1, dw2, db2, dw3, db3 = "train dwn ,dbn","train dwn ,dbn","train dwn ,dbn","train dwn ,dbn","train dwn ,dbn","train dwn ,dbn"
-        self.weights, self.biases = {'w1': "train_err", 'w2': "train_err", 'w3': "train_err"},{'b1':"train_err", 'b2':"train_err", 'b3': "train_err"}
+        dw1, db1, dw2, db2, dw3, db3 = self.backward(inputs,labels,outputs)
+        # Use below optimizer.mbgd(self.weights,self.biases,dw1, db1, dw2, db2, dw3, db3,lr)
+        self.weights, self.biases = optimizer.mbgd(self.weights,self.biases,dw1, db1, dw2, db2, dw3, db3,lr)
         return creloss, accuracy, outputs
 
     def predict(self, inputs):
@@ -140,9 +141,9 @@ class FullyConnected:
         score, idx =torch.max(outputs,1)
         equality_tensor=torch.eq(idx,labels)
         non_zero_tensor=torch.nonzero(equality_tensor)
-        print(idx,labels)
+        #print(idx,labels)
         #Eprint(equality_tensor)
-        print("Non-zero",non_zero_tensor)
+        #print("Non-zero",non_zero_tensor)
         try:
             eqt=len(list(non_zero_tensor))
             #eqt=torch.max(non_zero_tensor).item()
@@ -163,24 +164,38 @@ class FullyConnected:
             outputs (torch.tensor): predictions from neural network. Size (batch_size, N_out)
         """
         batch_size=wbg.batch_size_calc(inputs)
-        outputs=torch.Tensor(self.N_out,1)
         #print("Empty outputs size",outputs.size())
         count=1
+
         for input_tensor in inputs:
+            print("input layer")
             input_matrix_tensor=torch.reshape(input_tensor,(784,1))
-            self.cache['z1'] = self.weighted_sum(input_matrix_tensor,self.weights['w1'],self.biases['b1'])
-            a1 = activation.sigmoid(self.cache['z1'])
-            self.cache['z2'] = self.weighted_sum(a1,self.weights['w2'],self.biases['b2'])
-            a2 = activation.sigmoid(self.cache['z2'])
-            self.cache['z3'] = self.weighted_sum(a2,self.weights['w3'],self.biases['b3'])
-            outputs_element = activation.softmax(self.cache['z3'])
+            print("hl1")
+            z1 = self.weighted_sum(input_matrix_tensor,self.weights['w1'],self.biases['b1'])
+            a1 = activation.sigmoid(z1)
+            print("hl2")
+            z2= self.weighted_sum(a1,self.weights['w2'],self.biases['b2'])
+            a2 = activation.sigmoid(z2)
+            print("output_layer")
+            z3 = self.weighted_sum(a2,self.weights['w3'],self.biases['b3'])
+            outputs_element = activation.softmax(z3)
             if count ==1:
+                print("1st pass in batch")
                 outputs=outputs_element
+                z1_torch=z1
+                z2_torch=z2
+                z3_torch=z3
             else:
                 outputs=torch.cat((outputs,outputs_element),1)
+                z1_torch=torch.cat((z1_torch,z1),1)
+                z2_torch=torch.cat((z2_torch,z2),1)
+                z3_torch=torch.cat((z3_torch,z3),1)
             count=count+1
         outputs=torch.reshape(outputs,(batch_size,self.N_out))
-        #print("Foward pass output size",outputs.size())
+        self.cache['z1']=torch.transpose(z1_torch, 0, 1)
+        self.cache['z2']=torch.transpose(z2_torch, 0, 1)
+        self.cache['z3']=torch.transpose(z3_torch, 0, 1)
+        #print("Foward pass z2 size",self.cache['z3'].size())
         return outputs
 
     def weighted_sum(self, X, w, b):
@@ -195,7 +210,11 @@ class FullyConnected:
             result (torch.tensor): w*X + b of Size (K, J)
         """
         mul=torch.mm(w,X)#porduct component
-        result=b.add(mul)
+        print("b size",b.size())
+        print("X size",X.size())
+        print("W size",w.size())
+        print("mul size",mul.size())
+        result=b+mul    
         return result
 
     def backward(self, inputs, labels, outputs):
@@ -217,10 +236,13 @@ class FullyConnected:
             db3 (torch.tensor): Gradient of loss w.r.t. b3. Size like b3
         """
         # Calculating derivative of loss w.r.t weighted sum
-        dout = "dout not coded"
-        d2 = "d2 not coded"
-        d1 = "d1 not coded"
-        dw1, db1, dw2, db2, dw3, db3 = "notdw1","notdb1","notdw2","notdb2","notdw3","notdb3"# calculate all gradients
+        dout = loss.delta_cross_entropy_softmax(outputs,labels)#Size(batch_size,dim of N_out)
+        d2 = torch.mm(dout,self.weights['w3'])*loss.delta_sigmoid(self.cache['z2']) #d2 (torch.tensor): error at hidden layer 2. Size like a2 (or z2)
+        d1 = torch.mm(d2,self.weights['w2'])*loss.delta_sigmoid(self.cache['z1'])
+        print("dout",dout.size())
+        print("d2",d2.size())
+        print("d1",d1.size())
+        dw1, db1, dw2, db2, dw3, db3 = self.calculate_grad(inputs, d1, d2, dout)# calculate all gradients
         return dw1, db1, dw2, db2, dw3, db3
 
     def calculate_grad(self, inputs, d1, d2, dout):
@@ -243,21 +265,34 @@ class FullyConnected:
             db3 (torch.tensor): Gradient of loss w.r.t. b3. Size like b3
         """
         #"notdw1","notdb1","notdw2","notdb2","notdw3","notdb3"
-        dw3 = "notdw3"
-        dw2 = "notdw2"
-        dw1 = "notdw1"
+        
+        m=wbg.batch_size_calc(inputs)
+        trnasformed_input=torch.reshape(inputs,(m,784))
 
-        db1 = "notdb1"
-        db2 = "notdb2"
-        db3 = "notdb3"
+        dw3 = (torch.mm(torch.transpose(dout, 0, 1),torch.sigmoid(self.cache['z2'])))/m
+        dw2 = (torch.mm(torch.transpose(d2, 0, 1),torch.sigmoid(self.cache['z1'])))/m
+        dw1 = (torch.mm(torch.transpose(d1, 0, 1),trnasformed_input))/m
+
+        db1t=  (torch.sum(d1,dim=0))/m
+        db2t= (torch.sum(d2,dim=0))/m
+        db3t= (torch.sum(dout,dim=0))/m
+        
+        db1=torch.reshape(db1t,(256,1))
+        db2=torch.reshape(db2t,(256,1))
+        db3=torch.reshape(db3t,(10,1))
+
+        print("dw1",dw1.size())
+        print("dw2",dw2.size())
+        print("dw3",dw3.size())
+        print("db1",db1.size())
+        print("db2",db2.size())
+        print("db3",db3.size())
         return dw1, db1, dw2, db2, dw3, db3
-    
-    
-    
     #Delete this later
     def crel(self,outputs,labels):
-            return loss.cross_entropy_loss(outputs,labels)
-    
+        return loss.cross_entropy_loss(outputs,labels)
+    def del_crel(self,outputs,labels,dterm):
+        return loss.delta_cross_entropy_softmax(outputs,labels,dterm)
 
 
 

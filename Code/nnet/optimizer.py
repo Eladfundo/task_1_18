@@ -11,9 +11,9 @@ def mbgd(weights, biases, dw1, db1, dw2, db2, dw3, db3, lr):
     weights['w1'] = weights['w1'] -(lr*dw1)
     weights['w2'] = weights['w2'] -(lr*dw2)
     weights['w3'] = weights['w3'] -(lr*dw3)
-    biases['b1'] = weights['b1'] -(lr*db1)
-    biases['b2'] = weights['b2'] -(lr*db2)
-    biases['b3'] = weights['b3'] -(lr*db3)
+    biases['b1'] = biases['b1'] -(lr*db1)
+    biases['b2'] = biases['b2'] -(lr*db2)
+    biases['b3'] = biases['b3'] -(lr*db3)
 
     return weights, biases
 

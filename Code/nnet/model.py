@@ -97,6 +97,10 @@ class FullyConnected:
         """
         outputs = self.forward(inputs)# forward pass
         score, idx =torch.max(outputs,1) # find max score and its index
+        print("outputs",outputs)
+        print("score",score)
+        print("idx",idx)
+
         return score, idx
 
     def eval(self, inputs, labels, debug=False):
@@ -237,8 +241,13 @@ class FullyConnected:
         """
         # Calculating derivative of loss w.r.t weighted sum
         dout = loss.delta_cross_entropy_softmax(outputs,labels)#Size(batch_size,dim of N_out)
+        
         d2 = torch.mm(dout,self.weights['w3'])*loss.delta_sigmoid(self.cache['z2']) #d2 (torch.tensor): error at hidden layer 2. Size like a2 (or z2)
         d1 = torch.mm(d2,self.weights['w2'])*loss.delta_sigmoid(self.cache['z1'])
+        """
+        d2 = torch.mm(dout,self.weights['w3'])*self.cache['z2'] #d2 (torch.tensor): error at hidden layer 2. Size like a2 (or z2)
+        d1 = torch.mm(d2,self.weights['w2'])*(self.cache['z1'])
+        """
         #print("dout",dout.size())
         #print("d2",d2.size())
         #print("d1",d1.size())
@@ -268,9 +277,14 @@ class FullyConnected:
         
         m=wbg.batch_size_calc(inputs)
         trnasformed_input=torch.reshape(inputs,(m,784))
-
+        """
         dw3 = (torch.mm(torch.transpose(dout, 0, 1),torch.sigmoid(self.cache['z2'])))/m
         dw2 = (torch.mm(torch.transpose(d2, 0, 1),torch.sigmoid(self.cache['z1'])))/m
+        dw1 = (torch.mm(torch.transpose(d1, 0, 1),trnasformed_input))/m
+        """
+
+        dw3 = (torch.mm(torch.transpose(dout, 0, 1),self.cache['z2']))/m
+        dw2 = (torch.mm(torch.transpose(d2, 0, 1),self.cache['z1']))/m
         dw1 = (torch.mm(torch.transpose(d1, 0, 1),trnasformed_input))/m
 
         db1t=  (torch.sum(d1,dim=0))/m

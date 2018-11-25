@@ -15,9 +15,10 @@ def weight_initialiser(N_prev_layer,N_current_layer,device='cpu'):
         weight: Tensor of value of weight.
         """
         weight_val = 1.0/(N_prev_layer**0.5)
-        print(weight_val)
-        tensor = torch.ones((N_current_layer,N_prev_layer),requires_grad=True)
-        weight=tensor.new_full((N_current_layer, N_prev_layer), weight_val)
+        #print(weight_val)
+        tensor = torch.rand((N_current_layer,N_prev_layer))
+        #weight=tensor.new_full((N_current_layer, N_prev_layer), weight_val)
+        weight=tensor
         weight=weight.to(device)
         return weight
 
@@ -32,7 +33,7 @@ def bias_initialiser(N_current_layer,device='cpu'):
         Returns:
         bias: Tensor of filled with 0.
         """
-        bias=torch.zeros((N_current_layer,1),requires_grad=True)
+        bias=torch.rand((N_current_layer,1))
         bias=bias.to(device)
         return bias
 

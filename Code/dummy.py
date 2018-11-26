@@ -155,6 +155,8 @@ for i in range(EPOCHS):
         creloss, accuracy, outputs=net.train(inputs,labels)
         cre_loss_arr.append(creloss)
         acc_arr.append(accuracy)
+        break
+    break
 
 
 plt.plot(cre_loss_arr)

@@ -7,3 +7,6 @@
         "--extension-pkg-whitelist=torch"
     ]
 }
+{
+    "python.pythonPath": "C:\\Users\\ferna\\Anaconda3\\envs\\HC#2531_stage1\\python.exe"
+}
